@@ -48,11 +48,6 @@ Logs: `~/.local/log/meetily-cleanup.log`
 | `coaching` | Communication analysis and feedback |
 | `sales-intel` | Customer call analysis, objections, signals |
 | `technical` | Engineering decisions, architecture, TODOs |
-
-### VC / Investing (`~/.cursor/call_transcript_templates/`)
-
-| Template | Use Case |
-|----------|----------|
 | `first-call` | First founder call - full diligence framework |
 | `tech-diligence-call` | Deep technical diligence |
 | `customer-reference` | Customer reference call analysis |
@@ -104,18 +99,11 @@ Brief description of the template purpose.
 │   ├── stakeholder-update.md
 │   ├── coaching.md
 │   ├── sales-intel.md
-│   └── technical.md
+│   ├── technical.md
+|   └── ...
+├── README.md
 └── scripts/
     └── cleanup-recordings.sh
-
-~/Projects/.cursor/call_transcript_templates/   # VC-specific
-├── first_call.md
-├── tech_diligence_call.md
-├── customer_reference.md
-├── portfolio_company_catch_up.md
-├── investor_catchup.md
-├── interview.md
-└── generic.md
 
 ~/Projects/.claude/skills/calls/
 └── skill.md
