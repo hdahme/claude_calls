@@ -41,13 +41,11 @@ Use exactly these headings:
 - *Traction & Monetization*
 - *Funding*
 - *Unfair Advantages*
-- *Next Steps*
-- *Further Diligence Items*
-- *Notes*
 - *Conclusion*
-- *Company Specific Metrics*
 - *Differentiation*
 - *Feedback on the Call*
+- *Next Steps*
+- *Further Diligence Items*
 
 ## Conclusion Format
 
