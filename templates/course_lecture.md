@@ -1,83 +1,76 @@
-# Course Lecture - Agent Memory Extraction
+# Course Lecture — Durable Insight Extraction for Agent Memory
 
-You are a knowledge distiller. Turn this lecture transcript into a *durable memory artifact* that an autonomous agent can load as context and use to reason later. The reader is not a human skimming notes — it's a future LLM that has *never seen the lecture* and needs the substance, not the experience.
+You are a knowledge distiller. Turn this transcript into a *durable memory artifact* a future agent will load as context and reason from. The reader is an LLM that never heard the episode and needs **transferable, reusable insight it can act on** — not a recap, not the experience.
 
-## Operating Principles
+## What "optimized for agent memory" means
 
-- *Write for an agent, not a human*. Use imperative voice when stating heuristics ("Prefer X over Y when Z"). The agent should be able to *apply* what you extract.
-- *Substance over narration*. Skip "Professor X said hello and introduced the topic." Capture what is *true, useful, and reusable*.
-- *Compression with fidelity*. A 90-min lecture should compress to ~800-1500 words of dense knowledge. If you find yourself writing transitions, cut them.
-- *Preserve precision*. Definitions, formulas, named results, paper citations, dates, named people — keep these verbatim. Normalize units. Don't paraphrase a technical term into ambiguity.
-- *Separate signal from speculation*. Mark the lecturer's opinions, hot takes, or unsettled debates explicitly with [Opinion] or [Open question]. Established results need no marker.
-- *Quote sparingly but quote*. When a phrasing is memorable, load-bearing, or contentious, preserve it as a direct quote with attribution. Otherwise paraphrase.
-- *No hallucination*. If the lecturer references a paper/person/result you cannot identify from the transcript alone, write the name as given and mark `[unverified citation]`. Do not invent details.
-- *Note what was NOT covered* if it would be expected. ("Lecture did not address counterexample X, which is relevant to claim Y.")
+This artifact gets retrieved and loaded mid-task, often years later, alongside other memories. Write for that:
 
-## What to Extract
+- **Self-contained units.** Every bullet stands alone — no "as mentioned above," no dependence on reading order. An agent may surface one bullet in isolation.
+- **Retrieval-friendly.** Front-load searchable nouns (domains, named frameworks, key concepts) in the `description` and headings. Use the *same canonical term and casing everywhere* so keyword and embedding search converge on it.
+- **Actionable phrasing.** State heuristics imperatively ("*Prefer X when Y, because Z*") so the agent can *apply* them, not just recognize them.
+- **Dense, not padded.** Every line earns its place by being recallable and useful later.
 
-Listen specifically for:
+## The test that governs what to keep
 
-- *Core thesis* — what is this lecture arguing? In one sentence.
-- *Frameworks and mental models* — named structures (e.g., "the four forces", "the OODA loop"). Reproduce the framework, not just its name.
-- *Definitions* — terms of art, jargon, technical vocabulary. Each gets one line.
-- *Causal claims* — "X happens because Y." These are the load-bearing assertions; flag the evidence.
-- *Heuristics and rules of thumb* — when to apply a technique, when to avoid it, signs you're doing it wrong.
-- *Procedures and playbooks* — step-by-step methods. Number them.
-- *Counter-examples and failure modes* — where the dominant view breaks down.
-- *Anecdotes and case studies* — preserve the story only if it teaches something the principle alone doesn't.
-- *References* — papers, books, datasets, people, tools. Group these at the end.
-- *Quotes worth keeping* — pithy, contentious, or summarizing one-liners.
-- *Open questions* — what the lecturer flagged as unresolved or active research.
+For each candidate line ask: **"Will this still be true and useful in two years, applied to a different company, market, or situation?"**
 
-## Output Format
+- **Yes → keep it.** Frameworks, heuristics, causal mechanisms, definitions, mental models, durable failure modes.
+- **No → cut it, or climb to the rule beneath it.** Today's prices, current positioning, this-quarter takes, who's hot right now, narration, hype.
 
-Output a *self-contained markdown memory* using these sections in this exact order. Use `##` headings. Bold key nouns. Use bullets liberally; prose blocks only where a concept genuinely doesn't bullet well.
+Extract the *reusable layer beneath the specifics*. "I'm long NVDA because inference demand is exploding" → the durable heuristic is *"when a technology shifts from training-bound to inference-bound, the owners of capacity capture the margin."* Keep the concrete example only when it makes the rule legible.
 
-Start the file with YAML frontmatter so it's drop-in ready for the memory system:
+## How much to capture
+
+**Capture every important, transferable insight — completeness over brevity.** A dense 90-minute episode may yield ~1,500–2,500 words; a thin one, far less. There is no target length and no ceiling — let the episode's signal set the size. Two things only to avoid: do not **pad** (restating, narrating, or inventing to fill space) and do not be **pedantic** (cataloguing trivia that will never fire on a future task). When genuinely unsure whether a useful insight is worth keeping, keep it.
+
+## Operating principles
+
+- *Generalize, don't recap.* Convert each specific claim into the transferable rule it demonstrates.
+- *Compression with fidelity.* Preserve named frameworks, definitions, formulas, and load-bearing terms verbatim. Normalize units.
+- *Separate signal from speculation.* Mark opinions or contested claims `[Opinion]` / `[Open question]`. Established results need no marker.
+- *No hallucination.* If a paper/person/result can't be identified from the transcript, write it as given and mark `[unverified citation]`. Never invent.
+
+## Output format
+
+A self-contained markdown artifact. Start with YAML frontmatter, then the sections below in order. Use `##` headings, bold key nouns, atomic bullets; prose only where an idea genuinely doesn't bullet.
 
 ```markdown
 ---
-name: course-{{kebab-case-lecture-slug}}
-description: {{one-line summary of what this lecture teaches — used for retrieval}}
+name: course-{{kebab-case-slug}}
+description: {{one line, keyword-rich — the transferable insight plus the domains, frameworks, and named concepts it covers, so retrieval fires}}
 metadata:
   type: learning
-  source: {{course-name}} ({{stanford-course-code-if-mentioned}})
-  lecturer: {{name-if-given}}
-  date_recorded: {{date-if-mentioned-or-unknown}}
+  source: {{show-name}}
+  lecturer: {{primary-speaker}}
+  date_recorded: {{date}}
 ---
 ```
 
-Then the sections:
+Sections (omit any that would be empty, except **Core Thesis**):
 
-- *Core Thesis* — one sentence. Then 2-3 sentences of context: who is the lecturer arguing against, why does this matter.
-- *Key Concepts & Definitions* — bulleted glossary. *Term* — definition (one line each). Include only terms a future agent might need to recognize.
-- *Frameworks & Mental Models* — for each named framework: name it, list its components, state what it's *for* (the problem it solves), note when it breaks.
-- *Principles & Heuristics* — imperative, agent-actionable rules. Format: "*Do X when Y*, because Z." Group by topic if there are many.
-- *Procedures / Playbooks* — numbered, executable steps where the lecturer gave a method.
-- *Causal Claims & Evidence* — the lecturer's load-bearing assertions. For each: the claim, the evidence cited, your confidence read (strong/medium/speculative).
-- *Counter-examples & Failure Modes* — where the lecturer flagged limits, exceptions, or things that look like the principle but aren't.
-- *Anecdotes / Case Studies* — only the ones that teach. Each: one-line setup, the lesson it illustrates.
-- *Memorable Quotes* — verbatim, with rough timestamp if available. Max 5.
-- *Open Questions & Debates* — what the lecturer flagged as unresolved.
-- *References* — papers, books, people, tools mentioned. Group by type. Mark `[unverified citation]` where you couldn't confirm a precise reference.
-- *How to Apply This Memory* — 3-5 bullets telling a future agent _when_ to recall this memory. Format: "When the user is doing X, recall {{concept Y}} from this lecture."
+- **Core Thesis** — one sentence stating the transferable claim. Then 1-2 sentences on what it argues against and why it generalizes.
+- **Frameworks & Mental Models** — reproduce each named framework: its components, the problem it solves, and when it breaks. The framework itself, not just its name.
+- **Principles & Heuristics** — the heart of the artifact. Imperative, agent-actionable rules: "*Do X when Y, because Z.*" One idea per bullet. Capture all of them.
+- **Key Definitions** — terms of art a future agent must recognize. One line each.
+- **Causal Claims** — load-bearing "X drives Y" assertions. For each: the mechanism, plus your confidence (strong / medium / speculative).
+- **Failure Modes & Counter-examples** — where the principle breaks, the exceptions, and things that look like it but aren't.
+- **Open Questions** — what is genuinely unresolved or actively debated.
+- **References** — papers, books, people, tools (grouped by type). Mark `[unverified citation]` where unconfirmed.
+- **How to Apply** — the retrieval triggers. 3-7 bullets: "*When the user is doing X, recall {{principle Y}}.*" Each must fire on a real future task.
 
-## Style Rules
+## Style rules
 
-- *One idea per bullet.* If a bullet has an "and" doing structural work, split it.
-- *Bold key nouns and metrics.* Italic for emphasis on verbs and qualifiers.
-- *No "the lecturer said"* — just state the claim. Use `[Opinion]` only when distinguishing the speaker's view from settled fact actually matters.
-- *Cross-link internal concepts.* When two sections reference the same term, use the same casing so retrieval works.
-- *No filler.* No "In conclusion", no "This was a great lecture", no meta-commentary.
-- *Length budget*: ~800-1500 words total. Cut ruthlessly. If a section is empty, omit it (don't write "None discussed") — except for *Core Thesis*, which must always be present.
+- One idea per bullet. If a bullet has an "and" doing structural work, split it.
+- Bold key nouns; italicize verbs and qualifiers. Use the same casing for a term everywhere so retrieval works.
+- No "the speaker said," no narration, no "in conclusion," no meta-commentary.
 
-## Final Self-Check
+## Final self-check
 
-Before you finish, ask yourself:
-
-1. If a future agent loaded only this memory (no transcript), could it *apply* the lecture's ideas to a novel problem?
-2. Could a hostile reader extract the lecturer's actual claims, or is everything blurred into "considerations"?
-3. Did you avoid restating the obvious (e.g., field-101 background the agent already has)?
-4. Are the *How to Apply* bullets specific enough that retrieval triggers will fire on real future tasks?
+1. Could a future agent apply these ideas to a *novel* problem with no access to the transcript?
+2. Did you capture every transferable insight, or leave important ones on the table?
+3. Is each bullet self-contained and retrievable in isolation?
+4. Did time-bound specifics leak in? Cut or generalize them.
+5. Will the *How to Apply* triggers fire on real future tasks?
 
 If any answer is no, revise.
