@@ -1,0 +1,4 @@
+# Fixture for dep-check.sh
+slack-sdk==3.27.0
+google-cloud-kms>=2.21
+redis>=5.0
